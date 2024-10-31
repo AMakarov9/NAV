@@ -23,7 +23,14 @@ public class Årslønn {
     public Årslønn() {
         this.år =  new HashMap<Integer, Double>();
     }
+    /**
+     * Registrerer nytt kalenderår og lønn.
+     * @param åretForLønn kalenderår
+     * @param årslønn årslønn for gitt år
+     */
 
+
+    
     public void settInnÅrslønn(int åretForLønn, double årslønn) {
         this.sumÅrslønner+=årslønn;
 
@@ -33,6 +40,10 @@ public class Årslønn {
         this.år.put(åretForLønn, årslønn); 
     }
 
+    /**
+     * Henter årslønn for gitt år. 
+     * @return årslønn
+     */
     public double hentÅrslønnForÅr(int årstall) {
         return år.get(årstall); 
     }
@@ -42,9 +53,31 @@ public class Årslønn {
      * @return summen av lønningene
      */
     public double hentSumAvLønninger() {
+        // Ser at det aldri blir lagt til mer enn tre årslønninger, men legger likevel inn denne. 
+        // Hvis vi skal begynne å lagre flere lønninger vil dette fungere. 
+        if (år.size() > 3) {
+            double sumAvTreSiste = år.get(nyesteÅr) + år.get(nyesteÅr-1) + år.get(nyesteÅr-2);  
+            return sumAvTreSiste; 
+        }
         return sumÅrslønner; 
     }
 
+    /**
+     * Returnerer gjennomsnitt av de tre siste lønningene
+     * @return Gjennomsnittelig lønn
+     */
+    public double hentGjennomSnittAvLønninger() {
+        if (år.size() > 3) {
+            double sumAvTreSiste = år.get(nyesteÅr) + år.get(nyesteÅr-1) + år.get(nyesteÅr-2);  
+            return sumAvTreSiste/3; 
+        }
+        return sumÅrslønner/3;
+    }
+
+    /**
+     * Henter nyeste årslønn. 
+     * @return nyeste årslønn.
+     */
     public double hentNyesteÅrslønn() {
         return år.get(nyesteÅr); 
     }
