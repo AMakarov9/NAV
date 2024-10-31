@@ -1,4 +1,5 @@
 package no.nav.årslønn;
+import java.util.HashMap;
 
 /**
  * Representeren en person sin lønn et kalenderår.
@@ -7,30 +8,45 @@ package no.nav.årslønn;
  * @author Emil Elton Nilsen
  * @version 1.0
  */
+
+
+ /**
+  * Representerer all lønnsinformasjon for en person.
+  * Holder informasjon om lønn for hvert kalenderår som har blitt gitt.  
+  * 
+  */
 public class Årslønn {
 
-    private final int åretForLønn;
-    private final double årslønn;
+    private HashMap<Integer, Double> år; 
+    private double sumÅrslønner; 
+    private int nyesteÅr = 0;  
+    public Årslønn() {
+        this.år =  new HashMap<Integer, Double>();
+    }
 
-    public Årslønn(int åretForLønn, double årslønn) {
-        this.åretForLønn = åretForLønn;
-        this.årslønn = årslønn;
+    public void settInnÅrslønn(int åretForLønn, double årslønn) {
+        this.sumÅrslønner+=årslønn;
+
+        if (åretForLønn > this.nyesteÅr) {
+            this.nyesteÅr = åretForLønn; 
+        }
+        this.år.put(åretForLønn, årslønn); 
+    }
+
+    public double hentÅrslønnForÅr(int årstall) {
+        return år.get(årstall); 
     }
 
     /**
-     * Henter året som lønnen tilhører.
-     * @return året for lønnen.
+     * Returnerer summen av alle lønningene
+     * @return summen av lønningene
      */
-    public int hentÅretForLønn() {
-        return åretForLønn;
+    public double hentSumAvLønninger() {
+        return sumÅrslønner; 
     }
 
-    /**
-     * Henter årslønnen.
-     * @return årslønnen.
-     */
-    public double hentÅrslønn() {
-        return årslønn;
+    public double hentNyesteÅrslønn() {
+        return år.get(nyesteÅr); 
     }
 
 }
