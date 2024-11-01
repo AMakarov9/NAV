@@ -1,10 +1,8 @@
 package person;
-
-import no.nav.dagpenger.DagpengerKalkulator;
 import org.junit.jupiter.api.Test;
 import no.nav.person.Person;
-
 import static org.junit.jupiter.api.Assertions.*;
+
 public class PersonTester {
 
     @Test 
@@ -12,9 +10,7 @@ public class PersonTester {
         Person person = new Person(); 
         person.leggTilÅrslønn(2021, 100000);
         person.leggTilÅrslønn(2021, 100001);
-        
-        assertEquals(person.hentNyesteÅrslønn(), 100001);
-
+        assertEquals(100001, person.hentNyesteÅrslønn());
     }
 
     @Test 
