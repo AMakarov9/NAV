@@ -4,71 +4,82 @@ import no.nav.dagpenger.DagpengerKalkulator;
 import no.nav.person.Person;
 import no.nav.sak.Sak;
 import no.nav.saksbehandler.Saksbehandler;
+import no.nav.saksbehandler.Saksbehandler.SaksbehandlerSpesialisering;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
+/**
+ * Hovedsystem som håndterer registrering av personer, beregning av dagpenger og opprettelse av saker.
+ * Saksbehandlere kan interagere med systemet og hente ut saker som skal behandles.
+ *     Dersom en saksbehandler etterspør en sak, vil systemet returnere en sak basert på saksbehandlerens spesialisering.
+ *     Dersom det ikke finnes flere saker som samsvarer med saksbehandlerens spesialisering, vil systemet returnere null.
+ */
 public class Hovedsystem {
     HashMap<String, Person> personRegister;
-    DagpengerKalkulator dagpengerKalkulator;    
-    ArrayList<Sak> innvilgetDagpenger;
-    ArrayList<Sak> innvilgetDagPengerMedMaks;
-    ArrayList<Sak> avslagDagpenger; 
+    DagpengerKalkulator dagpengerKalkulator; 
+
+    HashMap<SaksbehandlerSpesialisering, LinkedList<Sak>> saker;
     public Hovedsystem() {
-        personRegister = new HashMap<>();
-        dagpengerKalkulator = new DagpengerKalkulator();
-        innvilgetDagpenger = new ArrayList<>();
-        innvilgetDagPengerMedMaks = new ArrayList<>();
-        avslagDagpenger = new ArrayList<>();
+        this.personRegister = new HashMap<>();
+        this.dagpengerKalkulator = new DagpengerKalkulator();
+        this.saker = new HashMap<>();
+        for (SaksbehandlerSpesialisering spesialisering : SaksbehandlerSpesialisering.values()) {
+            saker.put(spesialisering, new LinkedList<Sak>());
+        }
     }
 
+    /**
+     * Registrerer en person i systemet.
+     * @param navn til personen
+     * @param id til personen (feks fødselsnummer)
+     */
     public void registrerPerson(String navn, String id) {
         Person person = new Person(navn, id);
         personRegister.put(id, person);
     }
 
+    /**
+     * Legger til en årslønn for en person.
+     * @param id til personen
+     * @param år kalenderår
+     * @param lønn årslønn
+     */
     public void leggTilÅrslønnForPerson(String id, int år, double lønn) {
         Person person = personRegister.get(id);
         person.leggTilÅrslønn(år, lønn);
     }
 
+    /**
+     * Oppretter en sak for en person basert på personens id.
+     * Saken blir lagt inn i register avhengig av resultatet av kalkulasjonen
+     * @param id til personen
+     */
     public void opprettSak(String id) {
         Person person = personRegister.get(id); 
         double resultat = dagpengerKalkulator.kalkulerDagsats(person);
-        System.out.println(resultat);
-        System.out.println(dagpengerKalkulator.hentMaksDagssats());
         if (resultat == 0) {
-            avslagDagpenger.add(new Sak(person, "Har ikke rett på dagpenger"));	
+            saker.get(SaksbehandlerSpesialisering.AVSLAG).add(new Sak(person, "Har ikke rett på dagpenger"));	
         }
         else if (resultat < dagpengerKalkulator.hentMaksDagssats()) {
-            innvilgetDagpenger.add(new Sak(person, "Har rett på " +resultat+ " kr"));
+            saker.get(SaksbehandlerSpesialisering.INNVILGET).add(new Sak(person, "Har rett på " +resultat+ " kr"));
 
         }
         else {
-            innvilgetDagPengerMedMaks.add(new Sak(person, "Har rett på dagpenger med maks dagsats"));
+            saker.get(SaksbehandlerSpesialisering.INNVILGET_MAKS).add(new Sak(person, "Har rett på dagpenger med maks dagsats"));
         }
         
     }
 
+    /**
+     * Henter en sak basert på saksbehandlerens spesialisering.
+     * @param spesialisering til saksbehandleren
+     * @return sak som samsvarer med saksbehandlerens spesialisering
+     */
     public Sak hentSak(Saksbehandler.SaksbehandlerSpesialisering spesialisering) {
-        switch (spesialisering) {
-            case AVSLAG:
-                if (avslagDagpenger.isEmpty()) {
-                    return null;
-                }
-                return avslagDagpenger.removeFirst();
-            case INNVILGET:
-                if (innvilgetDagpenger.isEmpty()) {
-                    return null;
-                }
-                return innvilgetDagpenger.removeFirst();
-            case INNVILGET_MAKS:
-                if (innvilgetDagPengerMedMaks.isEmpty()) {
-                    return null;
-                }
-                return innvilgetDagPengerMedMaks.removeFirst();
-            default:
-                return null;
+        if (saker.get(spesialisering).isEmpty()) {
+            return null;
         }
+        return saker.get(spesialisering).removeFirst();
     }
     
     
