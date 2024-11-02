@@ -64,9 +64,6 @@ public class Person {
      * @return summen av lønningene
      */
     public double hentSumAvLønninger() {
-        // Ser at det aldri blir lagt til mer enn tre årslønninger, men legger likevel inn denne. 
-        // Antar at det ikke vil bli lagt inn mindre heller. 
-        // Hvis vi skal begynne å lagre flere lønninger vil dette fungere. 
         if (lønnsOversikt.size() > 3) {
             double sumAvTreSiste = lønnsOversikt.get(nyesteÅr) + lønnsOversikt.get(nyesteÅr-1) + lønnsOversikt.get(nyesteÅr-2);  
             return sumAvTreSiste; 

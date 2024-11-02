@@ -20,7 +20,7 @@ public class Sak {
     private static int antSaker = 1;
     private final Person person;
     private final int id; 
-    private String resultatAvKalkulasjon;
+    private final String resultatAvKalkulasjon;
     private Status status;
     private String saksbehandler; 
 

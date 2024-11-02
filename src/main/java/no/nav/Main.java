@@ -2,7 +2,6 @@ package no.nav;
 import java.util.Scanner;
 import no.nav.hovedsystem.Hovedsystem;
 import no.nav.saksbehandler.Saksbehandler;
-// import java.io.ByteArrayInputStream;
 public class Main {
     public static void main(String[] args) {
         Hovedsystem hovedsystem = new Hovedsystem();
@@ -10,7 +9,6 @@ public class Main {
         Saksbehandler saksbehandlerM = new Saksbehandler("Alexander Makssats", Saksbehandler.SaksbehandlerSpesialisering.INNVILGET_MAKS, hovedsystem);
         Saksbehandler saksbehandlerI = new Saksbehandler("Alexander Innvilget", Saksbehandler.SaksbehandlerSpesialisering.INNVILGET, hovedsystem);
         Saksbehandler saksbehandlerA = new Saksbehandler("Alexander Avslag", Saksbehandler.SaksbehandlerSpesialisering.AVSLAG, hovedsystem);
-        // System.setIn(new ByteArrayInputStream("j\nj\nj\n".getBytes()));
         Scanner sc = new Scanner(System.in);
         
         System.out.println("Ubehandlede saker: " + hovedsystem.hentAntallUbehandledeSaker()+"\n"+ "Behandlede saker: " + hovedsystem.hentAntallBehandledeSaker() + "\n");

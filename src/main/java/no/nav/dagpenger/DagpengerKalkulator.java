@@ -43,7 +43,6 @@ public class DagpengerKalkulator {
 
         int arbeidsdagerIÅret = 260;
         if(harRettigheterTilDagpenger(person)) {
-            // Henter beregningsmetode dersom personen har rettigheter til dagpenger
             BeregningsMetode beregningsMetode = velgBeregningsMetode(person); 
             switch (beregningsMetode) {
                 case SISTE_ÅRSLØNN: 
@@ -90,7 +89,7 @@ public class DagpengerKalkulator {
     /**
      * Velger hva som skal være beregnings metode for dagsats ut ifra en person sine årslønner.
      * @param person man skal beregne for blir gitt som argument
-     * @return beregnings metode for dagsats.
+     * @return beregningsmetode for dagsats.
      */
     public BeregningsMetode velgBeregningsMetode(Person person) {
         BeregningsMetode beregningsMetode;
