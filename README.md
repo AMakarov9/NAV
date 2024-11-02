@@ -1,4 +1,6 @@
-# Dagpenger kalkulator
+# Besvarelse
+
+## Dagpenger kalkulator
 Kalkulator for å beregne hvor mye dagpenger en person har rett på i Norge basert på dagens grunnbeløp (1G).
 
 For at en person skal ha rett på dagpenger, må en av de to følgene kravene være møtt:
@@ -20,6 +22,15 @@ Antall årlige arbeidsdager i Norge er satt til å være 260, så ved beregning 
 brukes og ikke 365.
 
 Dagens grunnbeløp, som brukes i kalkulasjonene, blir hentet fra REST API'et https://g.nav.no/api/v1/grunnbeløp
+
+## Del 2 
+Saksbehandlere kan interagere med et hovedsystem som lar dem hente og behandle saker. 
+Saksbehandlere har en spesialisering og kan bare behandle saker innenfor denne.
+Spesialiseringene er:
+
+- Avslag på grunn av for lav inntekt
+- Innvilget
+- Innvilget med makssats
 
 ## Forutsetninger
 - Java v21
