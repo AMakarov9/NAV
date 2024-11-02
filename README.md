@@ -22,11 +22,17 @@ brukes og ikke 365.
 Dagens grunnbeløp, som brukes i kalkulasjonene, blir hentet fra REST API'et https://g.nav.no/api/v1/grunnbeløp
 
 ## Forutsetninger
-- Java v21+
+- Java v21
 - Gradle v8.9+
 
 ## Kjør tester
 Tester kjøres gjennom Gradle, og kan kjøres i terminalen med følgende kommando:
 ````bash
 ./gradlew test
+````
+
+## Kjør demo
+Tester kjøres gjennom Gradle, og kan kjøres i terminalen med følgende kommando:
+````bash
+./gradlew demo
 ````
