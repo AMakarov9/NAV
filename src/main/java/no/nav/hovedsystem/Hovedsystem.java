@@ -1,4 +1,5 @@
 package no.nav.hovedsystem;
+import java.util.ArrayList;
 import java.util.HashMap;
 import no.nav.dagpenger.DagpengerKalkulator;
 import no.nav.person.Person;
@@ -13,19 +14,25 @@ import java.util.LinkedList;
  * Saksbehandlere kan interagere med systemet og hente ut saker som skal behandles.
  *     Dersom en saksbehandler etterspør en sak, vil systemet returnere en sak basert på saksbehandlerens spesialisering.
  *     Dersom det ikke finnes flere saker som samsvarer med saksbehandlerens spesialisering, vil systemet returnere null.
+ * Systemet holder også oversikt over antall ubehandlede og behandlede saker.
+ * 
+ * @author Alexander Gran Makarov
+ * @version 1.0
  */
 public class Hovedsystem {
-    HashMap<String, Person> personRegister;
-    DagpengerKalkulator dagpengerKalkulator; 
-
-    HashMap<SaksbehandlerSpesialisering, LinkedList<Sak>> saker;
+    private HashMap<String, Person> personRegister;
+    private DagpengerKalkulator dagpengerKalkulator; 
+    private HashMap<SaksbehandlerSpesialisering, LinkedList<Sak>> ubehandledeSaker;
+    private int AntallUbehandledeSaker;
+    private ArrayList<Sak> behandledeSaker;
     public Hovedsystem() {
         this.personRegister = new HashMap<>();
         this.dagpengerKalkulator = new DagpengerKalkulator();
-        this.saker = new HashMap<>();
+        this.ubehandledeSaker = new HashMap<>();
         for (SaksbehandlerSpesialisering spesialisering : SaksbehandlerSpesialisering.values()) {
-            saker.put(spesialisering, new LinkedList<Sak>());
+            ubehandledeSaker.put(spesialisering, new LinkedList<Sak>());
         }
+        this.behandledeSaker = new ArrayList<>();
     }
 
     /**
@@ -34,8 +41,13 @@ public class Hovedsystem {
      * @param id til personen (feks fødselsnummer)
      */
     public void registrerPerson(String navn, String id) {
-        Person person = new Person(navn, id);
-        personRegister.put(id, person);
+        if (personRegister.containsKey(id)) {
+            System.out.println("Personen er allerede registrert");
+        }
+        else {
+            Person person = new Person(navn, id);
+            personRegister.put(id, person);
+        }
     }
 
     /**
@@ -45,8 +57,13 @@ public class Hovedsystem {
      * @param lønn årslønn
      */
     public void leggTilÅrslønnForPerson(String id, int år, double lønn) {
-        Person person = personRegister.get(id);
-        person.leggTilÅrslønn(år, lønn);
+        if (!personRegister.containsKey(id)) {
+            System.out.println("Personen er ikke registrert");
+        }
+        else {
+            Person person = personRegister.get(id);
+            person.leggTilÅrslønn(år, lønn);
+        }
     }
 
     /**
@@ -58,16 +75,17 @@ public class Hovedsystem {
         Person person = personRegister.get(id); 
         double resultat = dagpengerKalkulator.kalkulerDagsats(person);
         if (resultat == 0) {
-            saker.get(SaksbehandlerSpesialisering.AVSLAG).add(new Sak(person, "Har ikke rett på dagpenger"));	
+            ubehandledeSaker.get(SaksbehandlerSpesialisering.AVSLAG).add(new Sak(person, "Har ikke rett paa dagpenger"));	
         }
         else if (resultat < dagpengerKalkulator.hentMaksDagssats()) {
-            saker.get(SaksbehandlerSpesialisering.INNVILGET).add(new Sak(person, "Har rett på " +resultat+ " kr"));
+            ubehandledeSaker.get(SaksbehandlerSpesialisering.INNVILGET).add(new Sak(person, "Har rett paa " +resultat+ " kr"));
 
         }
         else {
-            saker.get(SaksbehandlerSpesialisering.INNVILGET_MAKS).add(new Sak(person, "Har rett på dagpenger med maks dagsats"));
+            ubehandledeSaker.get(SaksbehandlerSpesialisering.INNVILGET_MAKS).add(new Sak(person, "Har rett paa dagpenger med maks dagsats"));
         }
-        
+
+        AntallUbehandledeSaker++;
     }
 
     /**
@@ -76,11 +94,49 @@ public class Hovedsystem {
      * @return sak som samsvarer med saksbehandlerens spesialisering
      */
     public Sak hentSak(Saksbehandler.SaksbehandlerSpesialisering spesialisering) {
-        if (saker.get(spesialisering).isEmpty()) {
+        if (ubehandledeSaker.get(spesialisering).isEmpty()) {
             return null;
         }
-        return saker.get(spesialisering).removeFirst();
+        AntallUbehandledeSaker--;
+        return ubehandledeSaker.get(spesialisering).removeFirst();
     }
-    
+
+    /**
+     * Legger til en sak i listen over behandlede saker.
+     * @param sak som skal legges til
+     */
+    public void leggTilBehandletSak(Sak sak) {
+        if (sak.hentStatus() == Sak.Status.UNDER_BEHANDLING) {
+            System.out.println("Sak har ikke blitt behandlet");
+        }
+        else {
+            behandledeSaker.add(sak);
+        }  
+    }
+
+
+    /**
+     * Henter antall personer i systemet.
+     * @return antall personer
+     */
+    public int hentAntallPersoner() {
+        return personRegister.size();
+    }
+
+    /**
+     * Henter antall saker som er ubehandlet.
+     * @return antall ubehandlede saker
+     */
+    public int hentAntallUbehandledeSaker() {
+        return AntallUbehandledeSaker;
+    }
+
+    /**
+     * Henter antall behandlede saker.
+     * @return antall behandlede saker
+     */
+    public int hentAntallBehandledeSaker() {
+        return behandledeSaker.size();
+    }
     
 }

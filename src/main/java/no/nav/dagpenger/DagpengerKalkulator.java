@@ -14,12 +14,13 @@ import no.nav.person.Person;
  * Antall årlige arbeidsdager i Norge er satt til å være 260, så ved beregning av dagsats må 260 dager
  * brukes og ikke 365.
  *
- * @author Emil Elton Nilsen
- * @version 1.0
+ * @author Emil Elton Nilsen 
+ * @author Alexander Gran Makarov
+ * @version 2.0
  */
 public class DagpengerKalkulator {
 
-    public final GrunnbeløpVerktøy grunnbeløpVerktøy;
+    private final GrunnbeløpVerktøy grunnbeløpVerktøy;
     public DagpengerKalkulator() {
         this.grunnbeløpVerktøy = new GrunnbeløpVerktøy();
     }
@@ -41,8 +42,9 @@ public class DagpengerKalkulator {
         double dagsats = 0;
 
         int arbeidsdagerIÅret = 260;
-        BeregningsMetode beregningsMetode = velgBeregningsMetode(person); 
         if(harRettigheterTilDagpenger(person)) {
+            // Henter beregningsmetode dersom personen har rettigheter til dagpenger
+            BeregningsMetode beregningsMetode = velgBeregningsMetode(person); 
             switch (beregningsMetode) {
                 case SISTE_ÅRSLØNN: 
                     dagsats = Math.ceil(person.hentNyesteÅrslønn() / arbeidsdagerIÅret); 
@@ -59,6 +61,14 @@ public class DagpengerKalkulator {
         }
 
         return dagsats;
+    }
+
+    /**
+     * Henter maks dagssats en person kan få.
+     * @return maks dagssats en person kan få.
+     */
+    public double hentMaksDagssats() {
+        return Math.ceil(grunnbeløpVerktøy.hentMaksÅrligDagpengegrunnlag() / 260);
     }
 
     /**
@@ -85,7 +95,7 @@ public class DagpengerKalkulator {
     public BeregningsMetode velgBeregningsMetode(Person person) {
         BeregningsMetode beregningsMetode;
 
-        // Lagrer variebel i stedet for å hente to ganger
+    
         double sistÅrslønn = person.hentNyesteÅrslønn(); 
 
         if (sistÅrslønn > person.hentSumAvLønninger() / 3) {

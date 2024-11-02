@@ -16,6 +16,14 @@ dependencies {
     implementation("io.github.cdimascio:dotenv-java:3.0.2")
 }
 
+
+tasks.register<JavaExec>("demo") {
+    mainClass.set("no.nav.Main")
+    classpath = sourceSets["main"].runtimeClasspath
+    standardInput = System.`in` 
+}
+
+
 tasks.test {
     useJUnitPlatform()
 }
